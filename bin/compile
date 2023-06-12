@@ -53,6 +53,12 @@ case "$APT_VERSION" in
   *)         APT_FORCE_YES="--allow-downgrades --allow-remove-essential --allow-change-held-packages";;
 esac
 
+topic "Add tailscale keyring"
+# Add Tailscale's GPG key
+sudo mkdir -p --mode=0755 /app/share/keyrings
+curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/jammy.noarmor.gpg | sudo tee /app/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+
+
 if [ -f $APT_CACHE_DIR/Aptfile ] && cmp -s $BUILD_DIR/Aptfile $APT_CACHE_DIR/Aptfile && [[ $CACHED_STACK == $STACK ]] ; then
   # Old Aptfile is the same as new and STACK has not changed
   topic "Reusing cache"
